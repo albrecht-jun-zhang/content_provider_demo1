@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="jason.wei.apps"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="8"
+        android:targetSdkVersion="18" />        
+
+    <!-- Used to request data from the Google+ APIs in the SignInActivity -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        
+        <provider
+	        android:name="jason.wei.apps.notepad.providers.NotesContentProvider"        
+	        android:authorities="jason.wei.apps.providers.NotesContentProvider"
+	        android:exported="false">
+	        <grant-uri-permission android:pathPattern=".*" />
+    	</provider>
+        
+        <activity
+            android:name="jason.wei.apps.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        <service android:name="jason.wei.apps.services.CustomService" >
+        </service>
+        <service android:name="jason.wei.apps.services.QueryService" >
+        </service>
+    </application>
+
+</manifest>
