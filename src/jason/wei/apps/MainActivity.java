@@ -6,11 +6,13 @@ import jason.wei.apps.asyntasks.InsertQueryAT;
 import jason.wei.apps.notes.Note.Notes;
 import jason.wei.apps.services.CustomService;
 import jason.wei.apps.services.QueryService;
-import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -18,7 +20,8 @@ import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 
-public class MainActivity extends Activity implements OnClickListener{
+public class MainActivity extends FragmentActivity implements OnClickListener, 
+LoaderManager.LoaderCallbacks<Cursor> {
 
 	public static String TAG = "MainActivity";
 	public static final String[] PROJECTION = new String[] {
@@ -43,6 +46,10 @@ public class MainActivity extends Activity implements OnClickListener{
 		
 		Button btnRefresh = (Button) findViewById(R.id.btnRefresh);
 		btnRefresh.setOnClickListener(this);
+		
+		// Prepare the loader.  Either re-connect with an existing one,
+        // or start a new one.
+        getSupportLoaderManager().initLoader(0, null, this);
 	}
 
 	@Override
@@ -97,5 +104,33 @@ public class MainActivity extends Activity implements OnClickListener{
 		}
 		
 	}
+
+	
+	@Override
+	public android.support.v4.content.Loader<Cursor> onCreateLoader(int arg0,
+			Bundle arg1) {
+		String[] whereRefreshArgs = {"1"};					
+		return new CursorLoader(this, Notes.CONTENT_URI, PROJECTION, Notes._ID + " = ?", whereRefreshArgs, null);
+	}
+
+
+	@Override
+	public void onLoadFinished(android.support.v4.content.Loader<Cursor> arg0,
+			Cursor cursor) {
+		cursor.moveToFirst();
+		while(!cursor.isAfterLast()) {
+			TextView tv1 = (TextView) findViewById(R.id.tv1);
+			tv1.setText(cursor.getString(MainActivity.COLUMN_INDEX_TEXT));
+			
+			cursor.moveToNext();
+		}
+		
+	}
+
+	@Override
+	public void onLoaderReset(android.support.v4.content.Loader<Cursor> arg0) {
+		// TODO Auto-generated method stub
+		
+	}	
 
 }
